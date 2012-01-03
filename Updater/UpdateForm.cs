@@ -34,25 +34,21 @@
 // exception statement from your version.
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
 using System.Diagnostics;
-using System.Xml.Linq;
-using System.Net;
-using ICSharpCode.SharpZipLib.Zip;
 using System.IO;
-using ICSharpCode.SharpZipLib.Core;
+using System.Net;
 using System.Threading;
+using System.Windows.Forms;
+using System.Xml.Linq;
+using ICSharpCode.SharpZipLib.Zip;
 
 namespace JarrettVance.Updater
 {
     public partial class UpdateForm : Form
     {
+        private const int extraWaitMilliseconds = 1000;
+
         public string Manifest { get; set; }
         public string Executible { get; set; }
         protected string ZipFile { get; set; }
@@ -63,7 +59,7 @@ namespace JarrettVance.Updater
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void OnFormLoad(object sender, EventArgs e)
         {
             Updating = true;
 
@@ -83,34 +79,34 @@ namespace JarrettVance.Updater
                     };
 
                 // download update zip
-                txtStatus.Text = "Downloading update...";
+                lblStatus.Text = "Downloading update...";
                 using (var web = new WebClient())
                 {
                     web.DownloadProgressChanged += new DownloadProgressChangedEventHandler((s, args) => progressBar1.Value = args.ProgressPercentage);
-                    web.DownloadFileCompleted += new AsyncCompletedEventHandler(web_DownloadFileCompleted);
+                    web.DownloadFileCompleted += new AsyncCompletedEventHandler(OnDownloadCompleted);
                     web.DownloadFileAsync(new Uri((string)doc.Root.Element("download")), ZipFile);
                 }
             }
             catch (Exception ex)
             {
                 Trace.WriteLine(ex);
-                txtStatus.Text = "Error: failed download";
+                lblStatus.Text = "Error: failed download";
                 Updating = false;
             }
         }
 
-        void web_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
+        private void OnDownloadCompleted(object sender, AsyncCompletedEventArgs e)
         {
-            System.Threading.Thread.Sleep(300); //don't go too fast
+            System.Threading.Thread.Sleep(extraWaitMilliseconds); //don't go too fast
             if (e.Error != null)
             {
                 Trace.WriteLine(e.Error);
-                txtStatus.Text = "Error: failed download";
+                lblStatus.Text = "Error: failed download";
                 Updating = false;
                 return;
             }
 
-            txtStatus.Text = "Unzipping update...";
+            lblStatus.Text = "Unzipping update...";
             progressBar1.Value = 0;
             picDownload.Visible = false;
             picZip.Visible = true;
@@ -154,7 +150,7 @@ namespace JarrettVance.Updater
                             }
                         }
                         UpdateProgress(((float)s.Position / (float)fileStream.Length) * 100F);
-                        System.Threading.Thread.Sleep(300); // don't go to fast
+                        System.Threading.Thread.Sleep(extraWaitMilliseconds); //don't go too fast
                     }
                 }
                 UnzipFinished();
@@ -185,7 +181,7 @@ namespace JarrettVance.Updater
             }
 
             Trace.WriteLine(ex);
-            txtStatus.Text = "Error: failed unzip";
+            lblStatus.Text = "Error: failed unzip";
             Updating = false;
         }
 
@@ -202,8 +198,8 @@ namespace JarrettVance.Updater
 
         private void Cleanup()
         {
-            System.Threading.Thread.Sleep(300); //don't go too fast
-            txtStatus.Text = "Cleaning up...";
+            System.Threading.Thread.Sleep(extraWaitMilliseconds); //don't go too fast
+            lblStatus.Text = "Cleaning up...";
             progressBar1.Value = 50;
             picZip.Visible = false;
             picCleanup.Visible = true;
@@ -217,7 +213,7 @@ namespace JarrettVance.Updater
             catch (Exception ex)
             {
                 Trace.WriteLine(ex);
-                txtStatus.Text = "Error: failed cleanup";
+                lblStatus.Text = "Error: failed cleanup";
                 Updating = false;
             }
         }
@@ -226,15 +222,15 @@ namespace JarrettVance.Updater
         {
             if (InvokeRequired)
             {
-                System.Threading.Thread.Sleep(300); //don't go too fast
+                System.Threading.Thread.Sleep(extraWaitMilliseconds); //don't go too fast
                 Invoke(new Action(Finish));
                 return;
             }
 
             progressBar1.Value = 100;
-            txtStatus.Text = "Finished!";
-            System.Threading.Thread.Sleep(300); //don't go too fast
-            Updating = false;  
+            lblStatus.Text = "Finished!";
+            System.Threading.Thread.Sleep(extraWaitMilliseconds); //don't go too fast
+            Updating = false;
 
             try
             {
@@ -247,15 +243,15 @@ namespace JarrettVance.Updater
             catch (Exception ex)
             {
                 Trace.WriteLine(ex);
-                txtStatus.Text = "Error: failed relaunch";
+                lblStatus.Text = "Error: failed relaunch";
             }
         }
 
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        private void OnFormClosing(object sender, FormClosingEventArgs e)
         {
             if (Updating)
             {
-                e.Cancel = MessageBox.Show("Stop the update and close?", "Update in Progress", 
+                e.Cancel = MessageBox.Show("Stop the update and close?", "Update in Progress",
                     MessageBoxButtons.YesNo) != System.Windows.Forms.DialogResult.Yes;
             }
         }
