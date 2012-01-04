@@ -5,21 +5,29 @@
 namespace ExampleApp
 {
     using System;
+    using System.Threading;
     using System.Windows.Forms;
     using System.Xml.Linq;
     using ExampleApp.Properties;
 
     public partial class MainForm : Form
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MainForm"/> class.
-        /// </summary>
         public MainForm()
         {
             this.InitializeComponent();
         }
 
-        void ShowUpdateDialog(Version appVersion, Version newVersion, XDocument doc)
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            // load state
+            miAutoCheck.Checked = Settings.Default.AutoCheckForUpdate;
+
+            // auto update
+            if (Settings.Default.AutoCheckForUpdate)
+                ThreadPool.QueueUserWorkItem((w) => Updater.CheckForUpdate(ShowUpdateDialog));
+        }
+
+        private void ShowUpdateDialog(Version appVersion, Version newVersion, XDocument doc)
         {
             if (InvokeRequired)
             {
@@ -52,8 +60,12 @@ namespace ExampleApp
 
         private void miAutoCheck_Click(object sender, EventArgs e)
         {
-            miAutoCheck.Checked = !miAutoCheck.Checked;
             Settings.Default.AutoCheckForUpdate = miAutoCheck.Checked;
+            Settings.Default.Save();
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
             Settings.Default.Save();
         }
     }

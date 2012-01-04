@@ -94,6 +94,7 @@
             this.miAutoCheck.Name = "miAutoCheck";
             this.miAutoCheck.Size = new System.Drawing.Size(224, 22);
             this.miAutoCheck.Text = "Check for Update on Startup";
+            this.miAutoCheck.Click += new System.EventHandler(this.miAutoCheck_Click);
             // 
             // miUpdate
             // 
@@ -112,6 +113,8 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
             this.Text = "Example App";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
