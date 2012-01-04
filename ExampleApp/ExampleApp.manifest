@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!-- Update this file when you have a new version. 
+     Upload both this file and the below zip package. -->
+<manifest>
+  <date>2012-01-03T23:21:52</date>
+  <version>1.0</version>
+  <info>http://jvance.com/pages/SimpleUpdater.xhtml</info>
+  <download>http://jvance.com/files/ExampleApp.1.0.zip</download>
+</manifest>

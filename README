@@ -1,1 +1,9 @@
 Please see http://jvance.com/pages/SimpleUpdater.xhtml
+
+Debug Instructions
+* Open Updater project properties
+* Go to Debug tab
+* Enter the command line options for manifest location & app location
+Example: C:\Programs\ChapterGrabber\ChapterGrabber.manifest C:\Programs\ChapterGrabber\ChapterGrabber.exe
+* Set working directory
+Example: C:\Programs\ChapterGrabber\

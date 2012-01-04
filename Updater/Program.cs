@@ -34,8 +34,6 @@
 // exception statement from your version.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace JarrettVance.Updater
@@ -50,10 +48,11 @@ namespace JarrettVance.Updater
         {
             if (args.Length != 2)
             {
-                MessageBox.Show("Updater was launched without manifest and executible arguments.", "Updater Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Updater was launched without manifest and executable arguments.", "Updater Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
+            // TODO : better error messages
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             var f = new UpdateForm();
