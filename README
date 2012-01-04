@@ -4,6 +4,6 @@ Debug Instructions
 * Open Updater project properties
 * Go to Debug tab
 * Enter the command line options for manifest location & app location
-Example: C:\Programs\ChapterGrabber\ChapterGrabber.manifest C:\Programs\ChapterGrabber\ChapterGrabber.exe
+Example: C:\Programs\ExampleApp\ExampleApp.manifest C:\Programs\ExampleApp\ExampleApp.exe
 * Set working directory
-Example: C:\Programs\ChapterGrabber\
+Example: C:\Programs\ExampleApp\
